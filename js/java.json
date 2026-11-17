@@ -1,0 +1,13 @@
+{
+  "lenguaje": "java",
+  "indentacion": "    ",
+  "lineas": [
+    { "nivel": 0, "piezas": ["public", "class", "Main", "{"] },
+    { "nivel": 1, "piezas": ["public", "static", "void", "main(String[] args)", "{"] },
+    { "nivel": 2, "piezas": ["for", "(int i = 0; i < 3; i++)", "{"] },
+    { "nivel": 3, "piezas": ["System.out.println(\"Hola \" + i);"] },
+    { "nivel": 2, "piezas": ["}"] },
+    { "nivel": 1, "piezas": ["}"] },
+    { "nivel": 0, "piezas": ["}"] }
+  ]
+}

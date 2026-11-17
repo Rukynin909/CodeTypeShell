@@ -1,0 +1,13 @@
+{
+  "lenguaje": "c++",
+  "indentacion": "    ",
+  "lineas": [
+    { "nivel": 0, "piezas": ["#include", "<iostream>"] },
+    { "nivel": 0, "piezas": ["int", "main()", "{"] },
+    { "nivel": 1, "piezas": ["for", "(int i = 0; i < 3; i++)", "{"] },
+    { "nivel": 2, "piezas": ["std::cout", "<<", "\"Hola \"", "<<", "i", "<<", "std::endl;"] },
+    { "nivel": 1, "piezas": ["}"] },
+    { "nivel": 1, "piezas": ["return", "0;"] },
+    { "nivel": 0, "piezas": ["}"] }
+  ]
+}
