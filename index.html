@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+
+<html lang="es">
+<head>
+    <!-- Datos que describen el documento -->
+    <meta charset="UTF-8" />
+    <title>TypeCodeTurt: index</title>
+    <link rel="icon" type="image/svg+xml" href="multimedia/shelly1.svg" />
+
+    <meta name="author" content="Marcos Galileo Campos Duarte" />
+    <meta name="description" content="COMPLETAR POR EL ESTUDIANTE" />
+    
+    <meta name ="viewport" content ="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Pixelify+Sans:wght@400..700&family=VT323&family=Tiny5&family=Jersey+10&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style/style.css" />
+    <link rel="stylesheet" href="style/format.css" />
+    <link rel="stylesheet" href="style/crt.css" />
+    <script src="js/effects.js" defer></script>
+    <script src="js/score.js" defer></script>
+    <script src="js/gameRecorder.js" defer></script>
+    <script src="js/chart.js" defer></script>
+    <script src="js/typing.js" defer></script>
+    <script src="js/gameMenu.js" defer></script>
+
+</head>
+
+<body class="crt">
+    <header>
+        <h1>
+            <a href="index.html">
+                <!--<img src="multimedia/turt.svg" alt="" aria-hidden="true" /> -->
+                >CodeTypeShell<span class="blink">_</span>
+            </a>
+        </h1>
+    
+    <nav>
+        <a href="index.html" title="Página de inicio del sitio">Start</a> 
+        <a href="ciclista.html" title="Para saber más sobre nuestros participantes">Stats</a>
+        <a href="equipo.html" title="Información sobre los equipos participantes">Ranking</a>
+        <a href="equipo.html" title="Información sobre los equipos participantes">Config</a>
+        <a href="etapa.html" title="Información sobre cada una de las etapas">About us</a>
+    </nav>
+    </header>
+
+   <!-- contenido de meteorología.html  -->
+    <main>
+        <section id="Ajustes">
+            <article id="Modo">
+                <button type="button">
+                    <img src="multimedia/reloj.svg" alt="" aria-hidden="true" />
+                    time
+                </button>
+                <p>|</p>
+                <button type="button">
+                    <img src="multimedia/lines.svg" alt="" aria-hidden="true" />
+                    lines</button>
+                <p>|</p>
+                <button type="button">
+                    <img src="multimedia/script.svg" alt="" aria-hidden="true" />script</button>
+                <p>|</p>
+                <button type="button">
+                    <img src="multimedia/freestyle.svg" alt="" aria-hidden="true" />freestyle</button>
+            </article>
+            <article id="Tiempo" aria-label="test duration">
+                <button type="button" aria-pressed="false">15</button>
+                <p>|</p>
+                <button type="button" aria-pressed="true">30</button>
+                <p>|</p>
+                <button type="button" aria-pressed="false">60</button>
+            </article>
+        </section>
+
+        <article id="typing-area">
+            <div id="typing-display">
+                <header id="status-bar">
+                    <button type="button" id="lenguage-button">java</button>
+
+                    <dialog id="dialogo">
+                        <ul class="lista" id="lista" role="listbox">
+                            <li>java</li>
+                            <li>python</li>
+                            <li>cpp</li>
+                        </ul>
+                    </dialog>
+
+                    <p class="status-item">
+                        <span class="status-label">score</span>
+                        <output id="score-counter" aria-live="polite">000000</output>
+                    </p>
+                    <p class="status-item">
+                        <span class="status-label">time</span>
+                        <output id="time-counter">15</output>
+                    </p>
+                </header>
+                <textarea id="text-to-type" rows="10" cols="50" aria-label="Escribe el código mostrado" spellcheck="false" readonly>public class Main {
+                </textarea>
+            </div>
+            <div id="stats" role="region" aria-labelledby="stat-title">
+                <div id="stats-summary">
+                    <h2 id="stat-title">&gt; GameOver<span class="blink" aria-hidden="true">_</span></h2>
+                    <dl id="stat-list">
+                        <div class="stat-row stat-main">
+                            <dt>score</dt>
+                            <dd><output id="stat-score">001304</output></dd>
+                        </div>
+                        <div class="stat-row">
+                            <dt>cpm</dt>
+                            <dd><output id="stat-cpm">101</output></dd>
+                        </div>
+                        <div class="stat-row">
+                            <dt>accuracy</dt>
+                            <dd><output id="stat-accuracy">98%</output></dd>
+                        </div>
+                        <div class="stat-row">
+                            <dt>errors</dt>
+                            <dd><output id="stat-errors">5</output></dd>
+                        </div>
+                    </dl>
+                </div>
+                <article id="stats-mode">
+                    <p id="stat-language">Java</p>
+                    <p>~</p>
+                    <p id="stat-time">Time:15s</p>
+                    <img src="multimedia/shelly1.svg" alt="" aria-hidden="true" />
+                </article>
+                <figure id="stats-chart"></figure>
+            </div>
+            <button type="button" id="restart-button">reset</button>
+        </article>
+    </main>
+    <footer>
+        <p>Campos Duarte, Marcos Galileo</p>
+        <address>
+            <a href="mailto:UO306276@uniovi.es">
+                UO306276@uniovi.es
+            </a>
+        </address>
+    </footer>
+</body>
+</html>

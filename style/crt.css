@@ -1,0 +1,86 @@
+/* ==========================================================
+   crt.css - Efecto CRT para TypeCodeTortoise
+   Todo el efecto está bajo la clase "crt" del <body>, así
+   que se activa/desactiva añadiendo o quitando esa clase.
+
+   Uso:
+     <link rel="stylesheet" href="crt.css">
+     <body class="crt"> ... </body>
+
+   Ejemplo de interruptor para la página Config (JS):
+
+     const body = document.body;
+     const activo = localStorage.getItem("crt") !== "off";
+     body.classList.toggle("crt", activo);
+
+     document.querySelector("#toggle-crt").addEventListener("click", () => {
+       const ahora = body.classList.toggle("crt");
+       localStorage.setItem("crt", ahora ? "on" : "off");
+     });
+   ========================================================== */
+
+/* ---------- Variables (ajusta aquí la intensidad) ---------- */
+:root {
+  --crt-verde: 57, 255, 120;          /* color del glow en RGB */
+  --crt-scanline-opacidad: 0.28;      /* 0.10 suave - 0.30 fuerte */
+  --crt-vineta-opacidad: 0.45;        /* oscuridad de los bordes */
+  --crt-flicker-opacidad: 0.02;       /* tinte del parpadeo */
+}
+
+/* ---------- 1. Scanlines + viñeta ---------- */
+body.crt::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;   /* no bloquea clics ni teclado */
+  z-index: 9999;
+  background:
+    /* líneas horizontales */
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0px,
+      rgba(0, 0, 0, 0) 2px,
+      rgba(0, 0, 0, var(--crt-scanline-opacidad)) 3px
+    ),
+    /* viñeta: bordes más oscuros */
+    radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0) 60%,
+      rgba(0, 0, 0, var(--crt-vineta-opacidad)) 100%
+    );
+}
+
+/* ---------- 2. Glow en el texto ----------
+   Solo en títulos, enlaces y elementos activos.
+   No lo apliques al texto que se teclea: dificulta la lectura. */
+body.crt h1,
+body.crt nav a,
+body.crt .activo {
+  text-shadow:
+    0 0 4px rgba(var(--crt-verde), 0.6),
+    0 0 12px rgba(var(--crt-verde), 0.3);
+}
+
+/* ---------- 3. Flicker muy leve ---------- */
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.97; }
+  52%      { opacity: 0.99; }
+}
+
+body.crt::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: rgba(var(--crt-verde), var(--crt-flicker-opacidad));
+  animation: crt-flicker 0.15s infinite;
+}
+
+/* ---------- Accesibilidad: sin animación si el usuario lo pide ---------- */
+@media (prefers-reduced-motion: reduce) {
+  body.crt::after {
+    animation: none;
+  }
+}

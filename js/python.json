@@ -1,0 +1,34 @@
+{
+  "lenguaje": "python",
+  "indentacion": "    ",
+  "scripts": [
+    {
+      "lineas": [
+        { "nivel": 0, "piezas": ["def", "main():"] },
+        { "nivel": 1, "piezas": ["for", "i", "in", "range(3):"] },
+        { "nivel": 2, "piezas": ["print(\"Hola \"", "+", "str(i))"] },
+        { "nivel": 0, "piezas": ["if", "__name__", "==", "\"__main__\":"] },
+        { "nivel": 1, "piezas": ["main()"] }
+      ]
+    },
+    {
+      "lineas": [
+        { "nivel": 0, "piezas": ["def", "factorial(n):"] },
+        { "nivel": 1, "piezas": ["if", "n", "<=", "1:"] },
+        { "nivel": 2, "piezas": ["return", "1"] },
+        { "nivel": 1, "piezas": ["return", "n", "*", "factorial(n", "-", "1)"] },
+        { "nivel": 0, "piezas": ["print(factorial(5))"] }
+      ]
+    },
+    {
+      "lineas": [
+        { "nivel": 0, "piezas": ["nombres", "=", "[\"shelly\",", "\"turt\",", "\"tort\"]"] },
+        { "nivel": 0, "piezas": ["for", "nombre", "in", "nombres:"] },
+        { "nivel": 1, "piezas": ["if", "len(nombre)", ">", "4:"] },
+        { "nivel": 2, "piezas": ["print(nombre.upper())"] },
+        { "nivel": 1, "piezas": ["else:"] },
+        { "nivel": 2, "piezas": ["print(nombre)"] }
+      ]
+    }
+  ]
+}
