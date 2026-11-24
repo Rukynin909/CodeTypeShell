@@ -1,5 +1,6 @@
 class ScoreTracker {
     static POINTS_PER_LINE = 100;
+    static MODES = ["time", "script", "freestyle"];
     constructor() {
         this.correctCount = 0;
         this.incorrectCount = 0;
@@ -16,6 +17,17 @@ class ScoreTracker {
     /* Cambia la duración del test (en segundos) */
     setStartTime(seconds){
         this.startTime = seconds;
+    }
+
+    getMode(){
+        return this.mode;
+    }
+
+    /* Cambia el modo de juego si es uno válido; devuelve si se ha cambiado */
+    changeMode(mode){
+        if (!ScoreTracker.MODES.includes(mode)) return false;
+        this.mode = mode;
+        return true;
     }
 
     startTracking(){

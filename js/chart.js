@@ -19,14 +19,16 @@ class StatsChart {
         this.svg = null;
         this.data = [];
         this.duration = 0;
+        this.mode = "time";
         this.maxValue = 0;
     }
 
-    /* Punto de entrada: recibe el array de getPerInterval() y la duración del test
-       en segundos, y pinta la gráfica entera */
-    render(intervals, durationSeconds) {
+    /* Punto de entrada: recibe el array de getPerInterval(), la duración real del test
+       en segundos y su modo, y pinta la gráfica entera */
+    render(intervals, durationSeconds, mode = "time") {
         this.data = Array.isArray(intervals) ? intervals : [];
         this.duration = durationSeconds > 0 ? durationSeconds : this.data.length;
+        this.mode = mode;
         this.maxValue = this.computeMax();
         this.svg = this.createSvg();
 
@@ -238,9 +240,11 @@ class StatsChart {
         const maxHits = Math.max(...this.data.map((interval) => interval.hits));
         const totalMisses = this.data.reduce((total, interval) => total + interval.misses, 0);
         const errorIntervals = this.data.filter((interval) => interval.misses > 0).length;
-        const intervalSeconds = this.duration / this.data.length;
+        // En "script" la duración es libre y el intervalo puede tener decimales (47 s / 15)
+        const intervalSeconds = Math.round((this.duration / this.data.length) * 10) / 10;
 
-        return `Aciertos cada ${intervalSeconds} s durante ${this.duration} s: ` +
+        return `Partida en modo ${this.mode}. ` +
+            `Aciertos cada ${intervalSeconds} s durante ${this.duration} s: ` +
             `máximo ${maxHits} aciertos en un intervalo, ` +
             `${totalMisses} fallos repartidos en ${errorIntervals} de ${this.data.length} intervalos`;
     }

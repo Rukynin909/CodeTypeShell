@@ -4,7 +4,6 @@ class TypingGame {
         this.lineIndex = 0;
         this.charIndex = 0;
         this.displayCharacters = null;
-        this.caretElement = null;
         this.scoreTracker = new ScoreTracker();
         this.timerId = null;
         this.gameOver = false;
@@ -93,6 +92,18 @@ class TypingGame {
         this.resetTimer();
     }
 
+    /* Conecta los botones de #Modo con la lógica del juego (lo visual lo hace GameMenu) */
+    setUpMode(){
+        const modeMenu = document.getElementById("Modo");
+        if (!modeMenu) return;
+        const modeButtons = Array.from(modeMenu.querySelectorAll("button"));
+        modeButtons.forEach((button) => {
+            // El nombre del modo es el texto del botón: "time", "script", "freestyle"
+            const mode = button.textContent.trim();
+            button.addEventListener("click", () => this.selectMode(mode));
+        });
+    }
+
     /* Guarda la duración elegida en ScoreTracker y reinicia la partida con ella */
     selectTime(seconds, buttons) {
         if (!(seconds > 0)) return;
@@ -105,6 +116,22 @@ class TypingGame {
         );
         // restart() vuelve a poner el reloj con getStartTime()
         this.restart();
+    }
+
+    /* Guarda el modo elegido en ScoreTracker y reinicia la partida con él */
+    selectMode(mode){
+        // Volver a pulsar el modo activo no reinicia la partida
+        if (mode === this.scoreTracker.getMode()) return;
+        if (!this.scoreTracker.changeMode(mode)) return;
+        this.updateTimeMenu();
+        this.restart();
+    }
+
+    /* Muestra el selector de tiempo solo en el modo "time" */
+    updateTimeMenu() {
+        const timeMenu = document.getElementById("Tiempo");
+        if (!timeMenu) return;
+        timeMenu.classList.toggle("hidden-menu", this.scoreTracker.getMode() !== "time");
     }
 
     /* Marca el lenguaje elegido, actualiza el botón y cierra el diálogo */
@@ -151,6 +178,9 @@ class TypingGame {
         if (!this.textAreaListenersReady) {
             textArea.addEventListener("focus", () => this.updateCaret());
             textArea.addEventListener("click", () => this.updateCaret());
+            // Sin readonly (Chrome no pinta el cursor en un textarea readonly):
+            // se cancela cualquier cambio del texto (teclear, pegar, cortar, deshacer…)
+            textArea.addEventListener("beforeinput", (event) => event.preventDefault());
             this.textAreaListenersReady = true;
         }
         this.updateCaret();
@@ -222,13 +252,24 @@ class TypingGame {
         scoreCounter.textContent = score < 0 ? score : String(score).padStart(6, "0");
     }
 
-    /* En modo "time", resta 1 al contador del reloj cada segundo hasta llegar a 0 */
+    /* Arranca el reloj en la primera pulsación según el modo:
+       "time" cuenta hacia atrás hasta 0, "script" cuenta hacia arriba y "freestyle" no tiene reloj */
     startTimer() {
-        if (this.scoreTracker.mode !== "time") return;
+        const mode = this.scoreTracker.getMode();
+        if (mode === "freestyle") return;
         if (this.timerId) return;
 
         const timeCounter = document.getElementById("time-counter");
         if (!timeCounter) return;
+
+        if (mode === "script") {
+            let elapsed = 0;
+            this.timerId = setInterval(() => {
+                elapsed++;
+                timeCounter.textContent = elapsed;
+            }, 1000);
+            return;
+        }
 
         let timeLeft = parseInt(timeCounter.textContent, 10);
         if (!(timeLeft > 0)) return;
@@ -272,10 +313,11 @@ class TypingGame {
             score.textContent = String(this.gameRecord.getScore()).padStart(6, "0");
         }
 
-        // En modo "time" la partida dura exactamente el tiempo inicial
+        // Duración real según el modo: fija en "time", lo que se tardó en "script"
+        const duration = this.gameRecord.getDuration();
         const cpm = document.getElementById("stat-cpm");
         if (cpm) {
-            cpm.textContent = this.gameRecord.getCPM(this.scoreTracker.getStartTime());
+            cpm.textContent = this.gameRecord.getCPM(duration);
         }
 
         const accuracy = document.getElementById("stat-accuracy");
@@ -294,17 +336,18 @@ class TypingGame {
             language.textContent = this.language;
         }
 
-        // Duración del test
-        const duration = this.scoreTracker.getStartTime();
+        // Duración del test, con la etiqueta del modo: "Time:30s" o "Script:47s"
         const time = document.getElementById("stat-time");
         if (time) {
-            time.textContent = `Time:${duration}s`;
+            const label = this.gameRecord.getMode() === "script" ? "Script" : "Time";
+            time.textContent = `${label}:${duration}s`;
         }
 
-        // Gráfica de aciertos y fallos, siempre en 15 intervalos
+        // Gráfica de aciertos y fallos, siempre en 15 intervalos de la duración real
         this.statsChart.render(
             this.gameRecord.getPerInterval(duration, StatsChart.INTERVALS),
-            duration
+            duration,
+            this.gameRecord.getMode()
         );
     }
 
@@ -333,13 +376,16 @@ class TypingGame {
         this.lineIndex = 0;
         this.charIndex = 0;
         this.displayCharacters = null;
-        this.caretElement = null;
 
         const prompt = document.getElementById("typing-prompt");
         if (prompt) prompt.remove();
 
         this.scoreTracker.restart();
         this.gameRecord.reset();
+        this.gameRecord.setMode(
+            this.scoreTracker.getMode(),
+            this.scoreTracker.getStartTime()
+        );
         this.updateScore();
         this.resetTimer();
 
@@ -359,12 +405,15 @@ class TypingGame {
 
     //Si se completa un script se visualiza uno nuevo
     async scriptComplete(){
+        if(this.scoreTracker.getMode() == "script"){
+            this.endGame();
+            return;
+        }
         const previousLines = this.lines;
         this.lines = [];
         this.lineIndex = 0;
         this.charIndex = 0;
         this.displayCharacters = null;
-        this.caretElement = null;
         const prompt = document.getElementById("typing-prompt");
         if (prompt) prompt.remove();
 
@@ -381,17 +430,25 @@ class TypingGame {
         this.updateCaret();
     }
 
-    /* Para el reloj y lo devuelve al tiempo inicial */
+    /* Para el reloj y lo devuelve a su valor inicial según el modo */
     resetTimer() {
         clearInterval(this.timerId);
         this.timerId = null;
 
         const timeCounter = document.getElementById("time-counter");
         if (!timeCounter) return;
-        timeCounter.textContent = this.scoreTracker.getStartTime();
+        const mode = this.scoreTracker.getMode();
+        if (mode === "script") {
+            timeCounter.textContent = 0;
+        } else if (mode === "freestyle") {
+            timeCounter.textContent = "~";
+        } else {
+            timeCounter.textContent = this.scoreTracker.getStartTime();
+        }
         timeCounter.classList.remove("low-time");
     }
 
+    /* Coloca el cursor nativo del textarea en el carácter que toca escribir */
     updateCaret() {
         const textArea = document.getElementById("text-to-type");
         if (!textArea) {
@@ -407,50 +464,6 @@ class TypingGame {
                 .length;
         }
         textArea.setSelectionRange(offset, offset);
-
-        if (!this.caretElement || !this.displayCharacters) return;
-
-        const prompt = document.getElementById("typing-prompt");
-        const promptRect = prompt.getBoundingClientRect();
-        const lineIndex = Math.min(this.lineIndex, this.displayCharacters.length - 1);
-        const characters = this.displayCharacters[lineIndex];
-        const characterIndex =
-            this.lineIndex < this.displayCharacters.length
-                ? this.charIndex
-                : characters.length;
-
-        let characterRect;
-        let left;
-        if (characterIndex < characters.length) {
-            characterRect = characters[characterIndex].getBoundingClientRect();
-            left = characterRect.left;
-        } else if (characters.length > 0) {
-            characterRect = characters[characters.length - 1].getBoundingClientRect();
-            left = characterRect.right;
-        } else {
-            let previousCharacter;
-            for (let index = lineIndex - 1; index >= 0; index--) {
-                const previousLine = this.displayCharacters[index];
-                if (previousLine.length > 0) {
-                    previousCharacter = previousLine[previousLine.length - 1];
-                    break;
-                }
-            }
-            const style = getComputedStyle(prompt);
-            left = promptRect.left + parseFloat(style.paddingLeft);
-            const previousRect = previousCharacter &&
-                previousCharacter.getBoundingClientRect();
-            characterRect = {
-                top: previousRect
-                    ? previousRect.bottom
-                    : promptRect.top + parseFloat(style.paddingTop),
-                height: parseFloat(style.lineHeight)
-            };
-        }
-
-        this.caretElement.style.left = `${left - promptRect.left}px`;
-        this.caretElement.style.top = `${characterRect.top - promptRect.top}px`;
-        this.caretElement.style.height = `${characterRect.height}px`;
     }
 
     /* Pinta el carácter actual según si es correcto o no */
@@ -486,10 +499,6 @@ class TypingGame {
             });
 
             prompt.replaceChildren(fragment);
-            this.caretElement = document.createElement("span");
-            this.caretElement.id = "typing-caret";
-            this.caretElement.setAttribute("aria-hidden", "true");
-            prompt.append(this.caretElement);
             textArea.style.color = "transparent";
         }
 
@@ -548,6 +557,7 @@ class TypingGame {
 const game = new TypingGame();
 game.setupLanguageMenu();
 game.setupTimeMenu();
+game.setUpMode();
 game.loadCode().catch((error) => {
     console.error("No se pudo iniciar el juego:", error);
 });

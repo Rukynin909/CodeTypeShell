@@ -45,7 +45,7 @@
 <!-- List what already works; leave the rest for the roadmap -->
 
 - **Real code** in multiple languages: Java, Python and C++.
-- **Modes:** by time, lines or code or scripts, or just blow some steam off on freestyle mode.
+- **Modes:** by time or scripts, or just blow some steam off on freestyle mode.
 - **Arcade scoring** with a multiplier that drops on every mistake.
 - **Per-game chart** when the round ends.
 - Optional **CRT effect** and retro sound effects.
@@ -134,7 +134,7 @@ Scripts are loaded with `defer`, without ES modules, in this order:
 ## Roadmap
 
 - [x] `time` mode (15 / 30 / 60 s)
-- [ ] `lines`, `script` and `freestyle` modes
+- [ ] `script` and `freestyle` modes
 - [ ] Config, Stats and About pages
 - [ ] More snippets per language
 - [ ] Basic SEO and deployment

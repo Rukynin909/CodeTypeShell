@@ -49,19 +49,15 @@
     <main>
         <section id="Ajustes">
             <article id="Modo">
-                <button type="button">
+                <button type="button" aria-pressed="true">
                     <img src="multimedia/reloj.svg" alt="" aria-hidden="true" />
                     time
                 </button>
                 <p>|</p>
-                <button type="button">
-                    <img src="multimedia/lines.svg" alt="" aria-hidden="true" />
-                    lines</button>
-                <p>|</p>
-                <button type="button">
+                <button type="button" aria-pressed="false">
                     <img src="multimedia/script.svg" alt="" aria-hidden="true" />script</button>
                 <p>|</p>
-                <button type="button">
+                <button type="button" aria-pressed="false">
                     <img src="multimedia/freestyle.svg" alt="" aria-hidden="true" />freestyle</button>
             </article>
             <article id="Tiempo" aria-label="test duration">
@@ -95,7 +91,7 @@
                         <output id="time-counter">15</output>
                     </p>
                 </header>
-                <textarea id="text-to-type" rows="10" cols="50" aria-label="Escribe el código mostrado" spellcheck="false" readonly>public class Main {
+                <textarea id="text-to-type" rows="10" cols="50" aria-label="Escribe el código mostrado" spellcheck="false">public class Main {
                 </textarea>
             </div>
             <div id="stats" role="region" aria-labelledby="stat-title">

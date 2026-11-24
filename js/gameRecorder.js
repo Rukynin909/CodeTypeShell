@@ -6,6 +6,28 @@ class GameRecord {
         this.score = 0;
         this.keystrokes = [];
         this.startTime = null;
+        this.mode = "time";
+        this.timeLimit = 0;
+    }
+
+    /* Guarda el modo de la partida y, en "time", su duración fija en segundos */
+    setMode(mode, timeLimit = 0) {
+        this.mode = mode;
+        this.timeLimit = timeLimit;
+    }
+
+    getMode() {
+        return this.mode;
+    }
+
+    /* Duración de la partida en segundos:
+       en "time" es la fija; en el resto, lo que se tardó hasta la última pulsación */
+    getDuration() {
+        if (this.mode === "time") return this.timeLimit;
+        const last = this.keystrokes[this.keystrokes.length - 1];
+        if (!last) return 0;
+        // Redondea hacia arriba para que la última pulsación quede dentro de la gráfica
+        return Math.max(1, Math.ceil(last.time / 1000));
     }
 
     /* Milisegundos desde la primera pulsación registrada (la primera vale 0) */
@@ -147,7 +169,7 @@ class GameRecord {
         return result;
     }
 
-    /* Vacía el registro para una partida nueva */
+    /* Vacía el registro para una partida nueva (el modo se conserva) */
     reset() {
         this.score = 0;
         this.keystrokes = [];

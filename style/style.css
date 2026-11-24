@@ -68,9 +68,16 @@ button:active {
     font-size: 0.75rem;
 }
 
-/* Tiempo seleccionado: se queda en verde, como el hover */
+/* Modo y tiempo seleccionados: se quedan en verde, como el hover */
+#Modo > button[aria-pressed="true"],
 #Tiempo > button[aria-pressed="true"] {
     color: var(--verde-brillante);
+}
+
+/* Fuera del modo "time" el selector de tiempo se oculta pero conserva su hueco,
+   para que el menú de modos no se desplace (visibility también lo quita del Tab) */
+#Tiempo.hidden-menu {
+    visibility: hidden;
 }
 
 textarea {
@@ -102,7 +109,9 @@ main > article > div {
     position: relative;
     width: 60em;
     max-width: calc(100vw - 2rem);
-    height: 20vw;
+    /* Alto fijo en rem (no en vw) para que no cambie con el ancho de la ventana:
+       padding del textarea (3.5rem + 1rem) + 10 líneas de 0.9rem × 1.8 de interlineado */
+    height: 25rem;
     overflow: hidden;
     border-radius: 1rem;
 }
@@ -371,25 +380,9 @@ pre > em {
     font-style: normal;
 }
 
-#typing-caret {
-    position: absolute;
-    z-index: 1;
-    display: block;
-    width: 2px;
-    background-color: var(--verde-brillante);
-    pointer-events: none;
-    animation: typing-caret-blink 1s steps(2, start) infinite;
-}
-
-@keyframes typing-caret-blink {
-    to {
-        visibility: hidden;
-    }
-}
-
 main > section > article{
     background-color: var(--negro);
-    border-radius: 1rem;
+    border-radius: 0.5rem;
 }
 
 @keyframes parpadeo {
